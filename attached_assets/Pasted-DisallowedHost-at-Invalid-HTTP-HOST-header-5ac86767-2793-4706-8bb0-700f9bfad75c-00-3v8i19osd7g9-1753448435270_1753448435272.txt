@@ -1,0 +1,70 @@
+DisallowedHost at /
+Invalid HTTP_HOST header: '5ac86767-2793-4706-8bb0-700f9bfad75c-00-3v8i19osd7g9f.worf.replit.dev'. You may need to add '5ac86767-2793-4706-8bb0-700f9bfad75c-00-3v8i19osd7g9f.worf.replit.dev' to ALLOWED_HOSTS.
+Request Method:	GET
+Request URL:	http://5ac86767-2793-4706-8bb0-700f9bfad75c-00-3v8i19osd7g9f.worf.replit.dev/
+Django Version:	4.2.7
+Exception Type:	DisallowedHost
+Exception Value:	
+Invalid HTTP_HOST header: '5ac86767-2793-4706-8bb0-700f9bfad75c-00-3v8i19osd7g9f.worf.replit.dev'. You may need to add '5ac86767-2793-4706-8bb0-700f9bfad75c-00-3v8i19osd7g9f.worf.replit.dev' to ALLOWED_HOSTS.
+Exception Location:	/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/django/http/request.py, line 150, in get_host
+Raised during:	api.template_views.home
+Python Executable:	/home/runner/workspace/.pythonlibs/bin/python
+Python Version:	3.11.13
+Python Path:	
+['/home/runner/workspace',
+ '/nix/store/zz7i75jb78idaz0rb1y1i4rzdyxq28vf-sitecustomize/lib/python/site-packages',
+ '/nix/store/yaps09f01jp3fd1405qlr0qz6haf6z03-python3.11-pip-25.0.1/lib/python3.11/site-packages',
+ '/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python311.zip',
+ '/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11',
+ '/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/lib-dynload',
+ '/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages',
+ '/nix/store/7d088dip86hlzri9sk0h78b63yfmx0a0-python3-3.11.13/lib/python3.11/site-packages',
+ '/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages',
+ '/nix/store/y0iwy8ma2m45pr23bw4r7lyz69v2b6wf-python3.11-setuptools-80.7.1/lib/python3.11/site-packages']
+Server time:	Fri, 25 Jul 2025 07:59:23 -0500
+Traceback Switch to copy-and-paste view
+/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/django/core/handlers/exception.py, line 55, in inner
+                response = get_response(request)
+                               ^^^^^^^^^^^^^^^^^^^^^ …
+Local vars
+/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/django/utils/deprecation.py, line 133, in __call__
+            response = self.process_request(request)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ …
+Local vars
+/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/django/middleware/common.py, line 48, in process_request
+        host = request.get_host()
+                   ^^^^^^^^^^^^^^^^^^ …
+Local vars
+/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/django/http/request.py, line 150, in get_host
+            msg = "Invalid HTTP_HOST header: %r." % host
+            if domain:
+                msg += " You may need to add %r to ALLOWED_HOSTS." % domain
+            else:
+                msg += (
+                    " The domain name provided is not valid according to RFC 1034/1035."
+                )
+            raise DisallowedHost(msg)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^ …
+    def get_port(self):
+        """Return the port number for the request as a string."""
+        if settings.USE_X_FORWARDED_PORT and "HTTP_X_FORWARDED_PORT" in self.META:
+            port = self.META["HTTP_X_FORWARDED_PORT"]
+        else:
+Local vars
+Variable	Value
+allowed_hosts	
+['localhost', '127.0.0.1', '0.0.0.0']
+domain	
+'5ac86767-2793-4706-8bb0-700f9bfad75c-00-3v8i19osd7g9f.worf.replit.dev'
+host	
+'5ac86767-2793-4706-8bb0-700f9bfad75c-00-3v8i19osd7g9f.worf.replit.dev'
+msg	
+('Invalid HTTP_HOST header: '
+ "'5ac86767-2793-4706-8bb0-700f9bfad75c-00-3v8i19osd7g9f.worf.replit.dev'. You "
+ 'may need to add '
+ "'5ac86767-2793-4706-8bb0-700f9bfad75c-00-3v8i19osd7g9f.worf.replit.dev' to "
+ 'ALLOWED_HOSTS.')
+port	
+''
+self	
+<WSGIRequest: GET '/'>
