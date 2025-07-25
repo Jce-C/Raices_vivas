@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}Iniciar Sesión - Raíces Vivas{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="row min-vh-100 g-0">
+        <!-- Left side - Form -->
+        <div class="col-lg-6 d-flex align-items-center justify-content-center">
+            <div class="auth-form-container">
+                <div class="text-center mb-5">
+                    <h1 class="h3 fw-bold mb-3">¡Bienvenido de nuevo!</h1>
+                    <p class="text-muted">Ingresa sus Credenciales para acceder a su cuenta</p>
+                </div>
+
+                <form action="{% url 'login' %}" method="POST" class="auth-form">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="email" class="form-control form-control-lg" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Contraseña</label>
+                        <input type="password" name="password" class="form-control form-control-lg" required>
+                        <div class="text-end mt-2">
+                            <a href="#" class="text-primary text-decoration-none small">Olvidé mi contraseña</a>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="form-check">
+                            <input type="checkbox" name="remember_me" class="form-check-input" id="remember_me">
+                            <label class="form-check-label" for="remember_me">Recordarme</label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-success btn-lg w-100 mb-4">Acceso</button>
+
+                    <div class="text-center mb-3">
+                        <span class="text-muted">o</span>
+                    </div>
+
+                    <button type="button" class="btn btn-outline-secondary w-100 mb-4">
+                        <i class="fab fa-google me-2"></i>
+                        Iniciar sesión con Google
+                    </button>
+
+                    <div class="text-center">
+                        <span class="text-muted">¿No tienes una cuenta? </span>
+                        <a href="{% url 'register' %}" class="text-primary text-decoration-none fw-bold">Inscríbete</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Right side - Image -->
+        <div class="col-lg-6 d-none d-lg-block">
+            <div class="auth-image-container">
+                <img src="https://pixabay.com/get/gd71f9f98ba52cbb79522c47f662a4142cd96cc81246d330f754084d4a08f61208fef9df246cc18af27810cf573047dbce3dee81a092bc6f23e5ab31617c4f6f9_1280.jpg" 
+                     alt="Artesanía Wayuu" class="auth-image">
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.auth-container {
+    padding-top: 76px;
+}
+
+.auth-form-container {
+    max-width: 400px;
+    width: 100%;
+    padding: 2rem;
+}
+
+.auth-image-container {
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+}
+
+.auth-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.btn-success {
+    background-color: #6c8b3a;
+    border-color: #6c8b3a;
+}
+
+.btn-success:hover {
+    background-color: #5a7632;
+    border-color: #5a7632;
+}
+</style>
+{% endblock %}

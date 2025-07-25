@@ -1,0 +1,251 @@
+{% extends "base.html" %}
+
+{% block title %}Blog - Raíces Vivas{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col">
+                <h1 class="display-4 fw-bold text-white">Blog</h1>
+                <p class="lead text-white-75 mb-0">Historias y tradiciones de nuestros artesanos</p>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-white-50">Home</a></li>
+                        <li class="breadcrumb-item active text-white">Blog</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Blog Content -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Main Content -->
+            <div class="col-lg-8">
+                {% if posts.items %}
+                    <div class="blog-posts">
+                        {% for post in posts.items %}
+                            <article class="blog-post mb-5 animate-on-scroll">
+                                <div class="blog-post-image mb-4">
+                                    <img src="{{ post.featured_image }}" alt="{{ post.title }}" 
+                                         class="img-fluid rounded-3 w-100">
+                                </div>
+                                
+                                <div class="blog-post-content">
+                                    <div class="blog-post-meta mb-3">
+                                        <span class="text-muted">
+                                            <i class="fas fa-calendar me-2"></i>
+                                            {{ post.created_at|date:"d \d\e F, Y" }}
+                                        </span>
+                                        <span class="text-muted ms-3">
+                                            <i class="fas fa-user me-2"></i>
+                                            {{ post.author }}
+                                        </span>
+                                    </div>
+                                    
+                                    <h2 class="blog-post-title mb-3">
+                                        <a href="{% url 'blog' %}" 
+                                           class="text-decoration-none text-dark">
+                                            {{ post.title }}
+                                        </a>
+                                    </h2>
+                                    
+                                    <p class="blog-post-excerpt text-muted mb-4">
+                                        {% if post.excerpt %}{{ post.excerpt }}{% else %}{{ post.content|truncatewords:30 }}{% endif %}
+                                    </p>
+                                    
+                                    <a href="{% url 'blog' %}" 
+                                       class="btn btn-outline-primary">
+                                        Leer Más <i class="fas fa-arrow-right ms-2"></i>
+                                    </a>
+                                </div>
+                            </article>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Pagination -->
+                    {% if posts.pages > 1 %}
+                        <nav aria-label="Blog pagination" class="mt-5">
+                            <ul class="pagination justify-content-center">
+                                {% if posts.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ posts.previous_page_number }}">
+                                            <i class="fas fa-chevron-left"></i>
+                                        </a>
+                                    </li>
+                                {% endif %}
+                                
+                                {% for page_num in posts.paginator.page_range %}
+                                    {% if page_num == posts.number %}
+                                        <li class="page-item active">
+                                            <span class="page-link">{{ page_num }}</span>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                                
+                                {% if posts.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ posts.next_page_number }}">
+                                            <i class="fas fa-chevron-right"></i>
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                    {% endif %}
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-blog fa-5x text-muted mb-4"></i>
+                        <h3 class="mb-3">No hay posts disponibles</h3>
+                        <p class="text-muted">Vuelve pronto para leer nuestras últimas historias.</p>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <div class="blog-sidebar">
+                    <!-- Categories -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">Categorías</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex flex-wrap gap-2">
+                                <a href="#" class="badge bg-light text-dark text-decoration-none">Tradición Wayuu</a>
+                                <a href="#" class="badge bg-light text-dark text-decoration-none">Artesanías</a>
+                                <a href="#" class="badge bg-light text-dark text-decoration-none">Cultura</a>
+                                <a href="#" class="badge bg-light text-dark text-decoration-none">Historia</a>
+                                <a href="#" class="badge bg-light text-dark text-decoration-none">Técnicas</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Posts -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">Posts Recientes</h5>
+                        </div>
+                        <div class="card-body">
+                            {% for post in posts|slice:":3" %}
+                                <div class="d-flex mb-3 {% if not forloop.last %}border-bottom pb-3{% endif %}">
+                                    <img src="{{ post.featured_image }}" 
+                                         alt="{{ post.title }}" 
+                                         class="rounded me-3" 
+                                         style="width: 60px; height: 60px; object-fit: cover;">
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-1">
+                                            <a href="{% url 'blog' %}" 
+                                               class="text-decoration-none text-dark">
+                                                {{ post.title|truncatechars:43 }}
+                                            </a>
+                                        </h6>
+                                        <small class="text-muted">
+                                            {{ post.created_at|date:"d M Y" }}
+                                        </small>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <!-- Featured Products -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Productos Destacados</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex mb-3"></div>
+                                <img src="https://pixabay.com/get/gcc4fbe936f59a9e334796d0ab62e78ac445c59e752e2ae0310d15aac5bab6da78f5139d97f4fe56f7c5e6c75a986e91b45fef0834ce0c58409093a908c936fa0_1280.jpg" 
+                                     alt="Mochila Wayuu" 
+                                     class="rounded me-3" 
+                                     style="width: 60px; height: 60px; object-fit: cover;">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">
+                                        <a href="{% url 'shop' %}" class="text-decoration-none text-dark">
+                                            Mochila Wayuu Tradicional
+                                        </a>
+                                    </h6>
+                                    <div class="text-primary fw-bold">$250,000</div>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex">
+                                <img src="https://pixabay.com/get/g4b54fd0305b34f09a9c9e4907edc1ad37f8c1830b1d3f56e5b2302e91de46535966a6cbe1109e033b5917a7c3b27e66ebeac016eccabcf1201ff846c04c3c106_1280.jpg" 
+                                     alt="Bolso Wayuu" 
+                                     class="rounded me-3" 
+                                     style="width: 60px; height: 60px; object-fit: cover;">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">
+                                        <a href="{% url 'shop' %}" class="text-decoration-none text-dark">
+                                            Bolso Wayuu Pequeño
+                                        </a>
+                                    </h6>
+                                    <div class="text-primary fw-bold">$180,000</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.page-header {
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+                url('https://pixabay.com/get/g4cb61acb2ecb4d9b926cbd249dfc1cd5df755e543ccf124bdf13f138de12c6f6b2ae4a84352b329aa134ec01344cbed0891ba00c065f5fe20faea775e124af09_1280.jpg');
+    background-size: cover;
+    background-position: center;
+    padding: 120px 0 60px;
+}
+
+.blog-post {
+    transition: transform 0.3s ease;
+}
+
+.blog-post:hover {
+    transform: translateY(-5px);
+}
+
+.blog-post-title a:hover {
+    color: #C58B44 !important;
+}
+
+.blog-post-image img {
+    transition: transform 0.3s ease;
+}
+
+.blog-post:hover .blog-post-image img {
+    transform: scale(1.02);
+}
+
+.blog-sidebar .card {
+    border: none;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.blog-sidebar .card-header {
+    background: linear-gradient(45deg, #C58B44, #D49C55);
+    color: white;
+    border: none;
+}
+
+.badge:hover {
+    background-color: #C58B44 !important;
+    color: white !important;
+}
+</style>
+{% endblock %}

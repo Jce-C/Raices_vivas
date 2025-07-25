@@ -1,0 +1,375 @@
+{% extends "base.html" %}
+{% load static %}
+{% load currency_filters %}
+
+{% block extra_css %}
+<style>
+    /* Hide default navigation on homepage */
+    #mainNav { display: none !important; }
+
+    .hero-section {
+        background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+                    url('https://pixabay.com/get/ge824a47cd4b0ca1f7c15721635990505d4a809d9e3db0809ecaeedd9e95a347070a4de6c3fefffeac72b01a95bf4938c3c03b94d000ba1ccbec6e87c5456c9e2_1280.jpg');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        padding-top: 0;
+    }
+
+    .cta-section {
+        background: linear-gradient(rgba(197, 139, 68, 0.9), rgba(197, 139, 68, 0.9)),
+                    url('https://pixabay.com/get/ge5094de442e534dc79fc3dd69b353b3e828f641c305137a914a841d9adcbf6c122bea713f155fee706086bcfa66528f1afb1d74f2abc967f33cc4e5c22e21a19_1280.jpg');
+        background-size: cover;
+        background-position: center;
+    }
+
+    /* Indicador de scroll */
+    .scroll-indicator {
+        position: absolute;
+        bottom: 30px;
+        right: 30px;
+        text-align: center;
+        color: white;
+        animation: bounce 2s infinite;
+    }
+
+    .scroll-text {
+        display: block;
+        font-size: 14px;
+        margin-bottom: 10px;
+        font-weight: 500;
+    }
+
+    .scroll-arrow {
+        font-size: 20px;
+        animation: bounce-arrow 1.5s infinite;
+    }
+
+    /* Animación de rebote */
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+        40% { transform: translateY(-10px); }
+        60% { transform: translateY(-5px); }
+    }
+
+    @keyframes bounce-arrow {
+        0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+        40% { transform: translateY(10px); }
+        60% { transform: translateY(5px); }
+    }
+
+    /* Estilos del collage de fotos */
+    .tesoros-section {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .photo-collage {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.1;
+        z-index: 1;
+    }
+
+    .collage-photo {
+        position: absolute;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        transform: rotate(15deg);
+    }
+
+    .collage-photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* Posiciones del collage */
+    .photo-1 {
+        top: 10%;
+        left: 5%;
+        width: 150px;
+        height: 150px;
+        transform: rotate(-15deg);
+    }
+
+    .photo-2 {
+        top: 20%;
+        right: 10%;
+        width: 120px;
+        height: 120px;
+        transform: rotate(20deg);
+    }
+
+    .photo-3 {
+        bottom: 30%;
+        left: 15%;
+        width: 100px;
+        height: 100px;
+        transform: rotate(45deg);
+    }
+
+    .photo-4 {
+        bottom: 15%;
+        right: 20%;
+        width: 130px;
+        height: 130px;
+        transform: rotate(-30deg);
+    }
+
+    /* Logo en navegación */
+    .brand-logo {
+        width: 30px;
+        height: 30px;
+        margin-right: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Include special floating navigation for homepage -->
+{% include 'home_nav.html' %}
+
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="hero-background">
+        <div class="container">
+            <div class="row align-items-center min-vh-100">
+                <div class="col-lg-6">
+                    <div class="hero-content animate-fade-in">
+                        <h1 class="display-2 fw-bold text-white mb-4">
+                            RAÍCES<br>
+                            <span class="text-primary">VIVAS</span>
+                        </h1>
+                        <p class="lead text-white mb-4">
+                            Descubre la riqueza cultural de La Guajira a través de nuestras auténticas artesanías Wayuu
+                        </p>
+                        <a href="{% url 'shop' %}" class="btn btn-primary btn-lg">Explorar Tienda</a>
+
+                        <!-- Scroll down indicator -->
+                        <div class="scroll-indicator">
+                            <span class="scroll-text">Baja para conocer más de La Guajira</span>
+                            <div class="scroll-arrow">
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="hero-image animate-slide-in">
+                        <img src="https://pixabay.com/get/gca960f3fef99d825feb08d6e4459b28b89bb3ed84e0aa2b33eead49ba5fd2e22d1b48ab7b6036d56e7cac22fda45eb6d9608f764e2c571141b3e6527b821cd3f_1280.jpg" 
+                             alt="Artesanías Wayuu" class="img-fluid rounded-3 shadow-lg">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About Section con Collage -->
+<section class="py-5 bg-light tesoros-section">
+    <!-- Collage de fotos de fondo -->
+    <div class="photo-collage">
+        <div class="collage-photo photo-1">
+            <img src="https://pixabay.com/get/gf8a2b6b8c7f5b7b54f5f9d5e5a5c5a5c5a5c5a5c5a5c5a5c5a5c5a5c5a5c5a5c5a_1280.jpg" alt="Artesana Wayuu">
+        </div>
+        <div class="collage-photo photo-2">
+            <img src="https://pixabay.com/get/ga9784cd8b4eddb7bfd8bfc3a3343dfabc5d3aeb33ce3cf718235d68f25c4511f9_1280.jpg" alt="Tejidos Wayuu">
+        </div>
+        <div class="collage-photo photo-3">
+            <img src="https://pixabay.com/get/gf8a2b6b8c7f5b7b54f5f9d5e5a5c5a5c5a5c5a5c5a5c5a5c5a5c5a5c5a5c5a5c5a_1280.jpg" alt="La Guajira">
+        </div>
+        <div class="collage-photo photo-4">
+            <img src="https://pixabay.com/get/g85f5a5c5a5c5a5c5a5c5a5c5a5c5a5c5a5c5a5c5a5c5a5c5a5c5a5c5a5c5a5c5a_1280.jpg" alt="Cultura Wayuu">
+        </div>
+    </div>
+
+    <div class="container position-relative">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <img src="https://pixabay.com/get/ga9784cd8b4eddb7bfd8bfc3a3343dfabc5d3aeb33ce3cf718235d68f25c4511f9b9b5c59cb0047d4f7463c528c0f95d8be079a2dfdc2a66c557c1193a597ac8f_1280.jpg" 
+                     alt="La Guajira" class="img-fluid rounded-3 shadow">
+            </div>
+            <div class="col-lg-6">
+                <h2 class="display-5 fw-bold mb-4">
+                    UN TESORO<br>
+                    DE <span class="text-primary">SABERES</span>
+                </h2>
+                <h3 class="h4 mb-3 text-primary">TRADICIÓN WAYUU</h3>
+                <p class="lead text-muted">
+                    Cada artesanía cuenta una historia única que conecta generaciones de sabiduría ancestral con la belleza contemporánea.
+                </p>
+                <p class="text-muted mb-4">
+                    Nuestras artesanas Wayuu tejen no solo hilos, sino tradiciones, sueños y la esencia misma de su cultura milenaria.
+                </p>
+                <a href="{% url 'blog' %}" class="btn btn-outline-primary">Conoce Más</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Products Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-lg-12 text-center animate-on-scroll">
+                <h2 class="display-5 fw-bold mb-4">
+                    PRODUCTOS <span class="text-primary">DESTACADOS</span>
+                </h2>
+                <p class="lead text-muted mb-5">
+                    Descubre nuestras piezas más especiales, cada una con su propia historia
+                </p>
+            </div>
+        </div>
+
+        <div class="row">
+            {% for product in featured_products %}
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card product-card h-100 animate-on-scroll">
+                        <div class="product-image">
+                            <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}">
+                            <div class="product-overlay">
+                                <a href="{% url 'product_detail' product.id %}" class="btn btn-white btn-sm">Ver Detalles</a>
+                                <a href="{% url 'product_detail' product.id %}" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-cart-plus"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">{{ product.name }}</h5>
+                            <p class="text-muted small">Por {{ product.artisan_name }}</p>
+                            <p class="text-primary fw-bold">{{ product.price|currency_symbol }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <a href="{% url 'shop' %}" class="btn btn-outline-primary btn-lg">Ver Todos los Productos</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Artisan Carousel Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-lg-12 text-center animate-on-scroll">
+                <h2 class="display-5 fw-bold mb-4">
+                    MANOS QUE <span class="text-primary">INSPIRAN</span>
+                </h2>
+                <p class="lead text-muted mb-5">
+                    Conoce a las talentosas artesanas detrás de cada creación
+                </p>
+            </div>
+        </div>
+
+        <div id="artisanCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <div class="row">
+                        {% for image in artisan_images|slice:":3" %}
+                            <div class="col-md-4">
+                                <div class="artisan-card text-center animate-on-scroll">
+                                    <img src="{{ image }}" 
+                                         alt="Artesana Wayuu" 
+                                         class="img-fluid mb-3"
+                                         style="height: 300px; object-fit: cover; width: 100%;">
+                                    <h5>Artesana Wayuu</h5>
+                                    <p class="text-muted">Tradición ancestral</p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="row">
+                        {% for image in artisan_images|slice:"3:6" %}
+                            <div class="col-md-4">
+                                <div class="artisan-card text-center animate-on-scroll">
+                                    <img src="{{ image }}" 
+                                         alt="Artesana Wayuu" 
+                                         class="img-fluid mb-3"
+                                         style="height: 300px; object-fit: cover; width: 100%;">
+                                    <h5>Artesana Wayuu</h5>
+                                    <p class="text-muted">Tradición ancestral</p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <button class="carousel-control-prev" type="button" data-bs-target="#artisanCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#artisanCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- Blog Section (if posts exist) -->
+{% if blog_posts %}
+<section class="py-5">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-lg-12 text-center animate-on-scroll">
+                <h2 class="display-5 fw-bold mb-4">
+                    HISTORIAS Y <span class="text-primary">CULTURA</span>
+                </h2>
+                <p class="lead text-muted mb-5">
+                    Descubre las historias detrás de nuestras tradiciones
+                </p>
+            </div>
+        </div>
+
+        <div class="row">
+            {% for post in blog_posts %}
+                <div class="col-lg-4 mb-4">
+                    <article class="card blog-card h-100 animate-on-scroll">
+                        <div class="blog-image">
+                            <img src="{{ post.featured_image }}" class="card-img-top" alt="{{ post.title }}">
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">{{ post.title }}</h5>
+                            <p class="card-text text-muted">{{ post.excerpt }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">{{ post.author }}</small>
+                                <a href="{% url 'blog' %}" class="btn btn-outline-primary btn-sm">Leer Más</a>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- CTA Section -->
+<section class="cta-section py-5">
+    <div class="container">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-8 animate-on-scroll">
+                <h2 class="display-5 fw-bold text-white mb-4">
+                    Conecta con nuestras raíces
+                </h2>
+                <p class="lead text-white mb-4">
+                    Cada compra apoya directamente a las artesanas Wayuu y preserva su cultura ancestral
+                </p>
+                <a href="{% url 'contact' %}" class="btn btn-light btn-lg me-3">Contáctanos</a>
+                <a href="{% url 'shop' %}" class="btn btn-outline-light btn-lg">Explorar Tienda</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

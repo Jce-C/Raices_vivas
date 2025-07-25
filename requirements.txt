@@ -1,0 +1,12 @@
+Django==4.2.7
+djangorestframework==3.14.0
+django-cors-headers==4.3.1
+python-decouple==3.8
+django-filter==23.3
+flask
+flask-login
+flask-sqlalchemy
+flask-wtf
+sqlalchemy
+werkzeug
+wtforms

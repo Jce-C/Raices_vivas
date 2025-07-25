@@ -1,0 +1,549 @@
+{% extends "base.html" %}
+
+{% block title %}Mi Perfil - Raíces Vivas{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col">
+                <h1 class="display-4 fw-bold text-white">Mi Perfil</h1>
+                <p class="lead text-white-75 mb-0">Gestiona tu cuenta y revisa tus pedidos</p>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ url_for('index') }}" class="text-white-50">Home</a></li>
+                        <li class="breadcrumb-item active text-white">Perfil</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Profile Content -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Profile Sidebar -->
+            <div class="col-lg-3">
+                <div class="profile-sidebar">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <div class="profile-avatar mb-3">
+                                <i class="fas fa-user-circle fa-5x text-primary"></i>
+                            </div>
+                            <h5 class="mb-1">{{ current_user.first_name }} {{ current_user.last_name }}</h5>
+                            <p class="text-muted small mb-3">{{ current_user.email }}</p>
+                            <span class="badge bg-success">Usuario Activo</span>
+                        </div>
+                    </div>
+                    
+                    <div class="list-group mt-4">
+                        <a href="#profile-info" class="list-group-item list-group-item-action active" data-bs-toggle="tab">
+                            <i class="fas fa-user me-2"></i>Información Personal
+                        </a>
+                        <a href="#order-history" class="list-group-item list-group-item-action" data-bs-toggle="tab">
+                            <i class="fas fa-shopping-bag me-2"></i>Historial de Pedidos
+                        </a>
+                        <a href="#account-settings" class="list-group-item list-group-item-action" data-bs-toggle="tab">
+                            <i class="fas fa-cog me-2"></i>Configuración
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Profile Content -->
+            <div class="col-lg-9">
+                <div class="tab-content">
+                    <!-- Profile Information -->
+                    <div class="tab-pane fade show active" id="profile-info">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Información Personal</h5>
+                            </div>
+                            <div class="card-body">
+                                <form>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">Nombre</label>
+                                                <input type="text" class="form-control" value="{{ current_user.first_name }}" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">Apellido</label>
+                                                <input type="text" class="form-control" value="{{ current_user.last_name }}" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">Nombre de Usuario</label>
+                                                <input type="text" class="form-control" value="{{ current_user.username }}" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">Correo Electrónico</label>
+                                                <input type="email" class="form-control" value="{{ current_user.email }}" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">Teléfono</label>
+                                                <input type="text" class="form-control" value="{{ current_user.phone or 'No especificado' }}" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">Ciudad</label>
+                                                <input type="text" class="form-control" value="{{ current_user.city or 'No especificada' }}" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Dirección</label>
+                                        <textarea class="form-control" rows="3" readonly>{{ current_user.address or 'No especificada' }}</textarea>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Miembro desde</label>
+                                        <input type="text" class="form-control" value="{{ current_user.created_at.strftime('%d de %B, %Y') }}" readonly>
+                                    </div>
+                                    
+                                    <button type="button" class="btn btn-primary" disabled>
+                                        <i class="fas fa-edit me-2"></i>Editar Perfil (Próximamente)
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Order History -->
+                    <div class="tab-pane fade" id="order-history">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Historial de Pedidos</h5>
+                                <span class="badge bg-primary">{{ orders|length }} pedidos</span>
+                            </div>
+                            <div class="card-body">
+                                {% if orders %}
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Número de Orden</th>
+                                                    <th>Fecha</th>
+                                                    <th>Estado</th>
+                                                    <th>Total</th>
+                                                    <th>Acciones</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for order in orders %}
+                                                    <tr>
+                                                        <td>
+                                                            <strong class="text-primary">{{ order.order_number }}</strong>
+                                                        </td>
+                                                        <td>{{ order.created_at.strftime('%d/%m/%Y') }}</td>
+                                                        <td>
+                                                            {% if order.status == 'pending' %}
+                                                                <span class="badge bg-warning">Pendiente</span>
+                                                            {% elif order.status == 'confirmed' %}
+                                                                <span class="badge bg-info">Confirmado</span>
+                                                            {% elif order.status == 'shipped' %}
+                                                                <span class="badge bg-primary">Enviado</span>
+                                                            {% elif order.status == 'delivered' %}
+                                                                <span class="badge bg-success">Entregado</span>
+                                                            {% elif order.status == 'cancelled' %}
+                                                                <span class="badge bg-danger">Cancelado</span>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td class="fw-bold text-primary">{{ format_currency(order.total_amount) }}</td>
+                                                        <td>
+                                                            <a href="{{ url_for('order_confirmation', order_number=order.order_number) }}" 
+                                                               class="btn btn-sm btn-outline-primary">
+                                                                <i class="fas fa-eye me-1"></i>Ver
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                {% else %}
+                                    <div class="text-center py-4">
+                                        <i class="fas fa-shopping-bag fa-3x text-muted mb-3"></i>
+                                        <h5>No tienes pedidos aún</h5>
+                                        <p class="text-muted">¡Explora nuestra tienda y haz tu primer pedido!</p>
+                                        <a href="{{ url_for('shop') }}" class="btn btn-primary">
+                                            <i class="fas fa-shopping-cart me-2"></i>Ir a la Tienda
+                                        </a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Account Settings -->
+                    <div class="tab-pane fade" id="account-settings">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">Cambiar Contraseña</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <form>
+                                            <div class="mb-3">
+                                                <label class="form-label">Contraseña Actual</label>
+                                                <input type="password" class="form-control" disabled>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Nueva Contraseña</label>
+                                                <input type="password" class="form-control" disabled>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Confirmar Nueva Contraseña</label>
+                                                <input type="password" class="form-control" disabled>
+                                            </div>
+                                            <button type="button" class="btn btn-primary" disabled>
+                                                <i class="fas fa-key me-2"></i>Cambiar Contraseña (Próximamente)
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">Preferencias de Notificaciones</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" id="emailNotifications" checked>
+                                            <label class="form-check-label" for="emailNotifications">
+                                                Notificaciones por Email
+                                            </label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" id="orderUpdates" checked>
+                                            <label class="form-check-label" for="orderUpdates">
+                                                Actualizaciones de Pedidos
+                                            </label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" id="promotions">
+                                            <label class="form-check-label" for="promotions">
+                                                Ofertas y Promociones
+                                            </label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" id="newsletter">
+                                            <label class="form-check-label" for="newsletter">
+                                                Newsletter Cultural
+                                            </label>
+                                        </div>
+                                        <button type="button" class="btn btn-primary" disabled>
+                                            <i class="fas fa-bell me-2"></i>Guardar Preferencias (Próximamente)
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card mt-4">
+                            <div class="card-header bg-danger text-white">
+                                <h5 class="mb-0">Zona de Peligro</h5>
+                            </div>
+                            <div class="card-body">
+                                <p class="text-muted">
+                                    Una vez que elimines tu cuenta, no hay vuelta atrás. Por favor, estate seguro.
+                                </p>
+                                <button type="button" class="btn btn-outline-danger" disabled>
+                                    <i class="fas fa-trash me-2"></i>Eliminar Cuenta (Próximamente)
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.page-header {
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+                url('https://pixabay.com/get/g8a6a3ba4705484f233cf940e0e2af563e31276cc20f6a43ac625e0386ba52b2998b5b7a8242328a1396b60e856fcae63e52cd086ccbbb604b6815029cc512dcf_1280.jpg');
+    background-size: cover;
+    background-position: center;
+    padding: 120px 0 60px;
+}
+
+.profile-sidebar {
+    position: sticky;
+    top: 100px;
+}
+
+.profile-avatar {
+    position: relative;
+}
+
+.profile-avatar::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 50%;
+    transform: translateX(50%);
+    width: 20px;
+    height: 20px;
+    background: #28a745;
+    border-radius: 50%;
+    border: 3px solid white;
+}
+
+.list-group-item.active {
+    background-color: #C58B44;
+    border-color: #C58B44;
+}
+
+.list-group-item:hover {
+    background-color: rgba(197, 139, 68, 0.1);
+}
+
+.card {
+    border: none;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.card-header {
+    background: linear-gradient(45deg, #C58B44, #D49C55);
+    color: white;
+    border: none;
+}
+
+.card-header.bg-danger {
+    background: linear-gradient(45deg, #dc3545, #e55567) !important;
+}
+
+.table th {
+    border-top: none;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    letter-spacing: 0.5px;
+}
+
+.badge {
+    font-size: 0.75rem;
+    padding: 0.375rem 0.75rem;
+}
+</style>
+{% endblock %}
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Mi Perfil - Wayuu Artesanía{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="fas fa-user-circle fa-4x text-primary mb-3"></i>
+                    <h5>{{ user.get_full_name|default:user.username }}</h5>
+                    <p class="text-muted">{{ user.email }}</p>
+                </div>
+            </div>
+            
+            <div class="list-group mt-3">
+                <a href="#profile-info" class="list-group-item list-group-item-action active">
+                    <i class="fas fa-user me-2"></i>Información Personal
+                </a>
+                <a href="#order-history" class="list-group-item list-group-item-action">
+                    <i class="fas fa-shopping-bag me-2"></i>Historial de Pedidos
+                </a>
+            </div>
+        </div>
+        
+        <div class="col-md-9">
+            <!-- Información Personal -->
+            <div id="profile-info" class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-user me-2"></i>Información Personal</h5>
+                </div>
+                <div class="card-body">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="first_name" class="form-label">Nombre</label>
+                                    <input type="text" class="form-control" id="first_name" name="first_name" 
+                                           value="{{ user.first_name }}" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="last_name" class="form-label">Apellido</label>
+                                    <input type="text" class="form-control" id="last_name" name="last_name" 
+                                           value="{{ user.last_name }}" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="email" name="email" 
+                                           value="{{ user.email }}" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="phone" class="form-label">Teléfono</label>
+                                    <input type="tel" class="form-control" id="phone" name="phone" 
+                                           value="{{ user.phone|default:'' }}">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="address" class="form-label">Dirección</label>
+                            <textarea class="form-control" id="address" name="address" rows="3">{{ user.address|default:'' }}</textarea>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="city" class="form-label">Ciudad</label>
+                                    <input type="text" class="form-control" id="city" name="city" 
+                                           value="{{ user.city|default:'' }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="country" class="form-label">País</label>
+                                    <input type="text" class="form-control" id="country" name="country" 
+                                           value="{{ user.country|default:'' }}">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Guardar Cambios
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Historial de Pedidos -->
+            <div id="order-history" class="card mt-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-shopping-bag me-2"></i>Historial de Pedidos</h5>
+                </div>
+                <div class="card-body">
+                    {% if orders %}
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>N° Pedido</th>
+                                        <th>Fecha</th>
+                                        <th>Estado</th>
+                                        <th>Total</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for order in orders %}
+                                    <tr>
+                                        <td><strong>{{ order.order_number }}</strong></td>
+                                        <td>{{ order.created_at|date:"d/m/Y" }}</td>
+                                        <td>
+                                            {% if order.status == 'pending' %}
+                                                <span class="badge bg-warning">Pendiente</span>
+                                            {% elif order.status == 'confirmed' %}
+                                                <span class="badge bg-info">Confirmado</span>
+                                            {% elif order.status == 'processing' %}
+                                                <span class="badge bg-primary">Procesando</span>
+                                            {% elif order.status == 'shipped' %}
+                                                <span class="badge bg-secondary">Enviado</span>
+                                            {% elif order.status == 'delivered' %}
+                                                <span class="badge bg-success">Entregado</span>
+                                            {% elif order.status == 'cancelled' %}
+                                                <span class="badge bg-danger">Cancelado</span>
+                                            {% endif %}
+                                        </td>
+                                        <td><strong>${{ order.total_amount|floatformat:2 }}</strong></td>
+                                        <td>
+                                            <a href="{% url 'order_confirmation' order.order_number %}" 
+                                               class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-eye"></i> Ver
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-shopping-bag fa-4x text-muted mb-3"></i>
+                            <h5>No tienes pedidos aún</h5>
+                            <p class="text-muted">Cuando realices tu primer pedido, aparecerá aquí.</p>
+                            <a href="{% url 'shop' %}" class="btn btn-primary">
+                                <i class="fas fa-shopping-cart me-2"></i>Ir a la Tienda
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Smooth scrolling para las pestañas
+document.querySelectorAll('.list-group-item').forEach(item => {
+    item.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        // Remover active de todos
+        document.querySelectorAll('.list-group-item').forEach(i => i.classList.remove('active'));
+        
+        // Agregar active al clickeado
+        this.classList.add('active');
+        
+        // Scroll al elemento
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({ behavior: 'smooth' });
+        }
+    });
+});
+</script>
+{% endblock %}
