@@ -1,0 +1,407 @@
+{% extends "base.html" %}
+{% load static %}
+{% load currency_filters %}
+{% load currency_filters %}
+
+{% block title %}{{ product.name }} - Raíces Vivas{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<section class="py-3 bg-light" style="margin-top: 76px;">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('shop') }}">Tienda</a></li>
+                <li class="breadcrumb-item">{{ product.category.name }}</li>
+                <li class="breadcrumb-item active">{{ product.name }}</li>
+            </ol>
+        </nav>
+    </div>
+</section>
+
+<!-- Product Details -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Product Images -->
+            <div class="col-lg-6">
+                <div class="product-images">
+                    <!-- Main Image -->
+                    <div class="main-image mb-3">
+                        <img id="mainImage" src="{{ product.image_url }}" alt="{{ product.name }}" 
+                             class="img-fluid rounded-3 shadow">
+                    </div>
+
+                    <!-- Thumbnail Images -->
+                    <div class="thumbnail-images">
+                        <div class="row g-2">
+                            <div class="col-3">
+                                <img src="{{ product.image_url }}" alt="{{ product.name }}" 
+                                     class="img-fluid rounded thumbnail-img active" onclick="changeMainImage(this.src)">
+                            </div>
+                            {% if product.additional_images %}
+                                {% for image in product.additional_images[:3] %}
+                                    <div class="col-3">
+                                        <img src="{{ image }}" alt="{{ product.name }}" 
+                                             class="img-fluid rounded thumbnail-img" onclick="changeMainImage(this.src)">
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <!-- Default additional views -->
+                                <div class="col-3">
+                                    <img src="https://pixabay.com/get/g2d92e418cbf7b43bb4e5f3626800ac1dbd63324e771cd212fffd97ab7139ce8ba2cfd30800c99cf68b91824da22e75151e78dd8346527f502dc8ae100277f29e_1280.jpg" 
+                                         alt="{{ product.name }}" class="img-fluid rounded thumbnail-img" onclick="changeMainImage(this.src)">
+                                </div>
+                                <div class="col-3">
+                                    <img src="https://pixabay.com/get/gccf8221838a1ea66437b96ae4756cbd74d194ef6e34aeee368f00b8f8a7be5418a4913b94956a4ecb32280a3b89cf542c031df11e89e703b1ae86a23b91bffbd_1280.jpg" 
+                                         alt="{{ product.name }}" class="img-fluid rounded thumbnail-img" onclick="changeMainImage(this.src)">
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Information -->
+            <div class="col-lg-6">
+                <div class="product-info">
+                    <h1 class="display-6 fw-bold mb-3">{{ product.name }}</h1>
+
+                    <!-- Price -->
+                    <div class="price-section mb-4">
+                        <span class="h2 text-primary fw-bold">{{ format_currency(product.price) }}</span>
+                        {% if product.artisan_name %}
+                            <div class="text-muted mt-1">Por {{ product.artisan_name }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Rating (placeholder) -->
+                    <div class="rating mb-3">
+                        <div class="stars">
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                        </div>
+                        <span class="text-muted ms-2">(5 reviews de clientes)</span>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="description mb-4">
+                        <p class="lead">{{ product.description }}</p>
+                    </div>
+
+                    {% if current_user.is_authenticated %}
+                        <!-- Add to Cart Form -->
+                        <form method="POST" action="{{ url_for('add_to_cart') }}" class="add-to-cart-form">
+                            {{ form.hidden_tag() }}
+                            {{ form.product_id(value=product.id) }}
+
+                            <!-- Color Selection -->
+                            {% if product.colors %}
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Color:</label>
+                                    <div class="color-options">
+                                        {% for color in product.colors %}
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="selected_color" 
+                                                       id="color{{ loop.index }}" value="{{ color }}" 
+                                                       {% if loop.first %}checked{% endif %}>
+                                                <label class="form-check-label" for="color{{ loop.index }}">
+                                                    {{ color }}
+                                                </label>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            <!-- Quantity -->
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Cantidad:</label>
+                                <div class="quantity-selector d-flex align-items-center">
+                                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="changeQuantity(-1)">-</button>
+                                    {{ form.quantity(class="form-control text-center mx-2", style="width: 80px;", min="1", max=product.stock_quantity) }}
+                                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="changeQuantity(1)">+</button>
+                                </div>
+                                <small class="text-muted">{{ product.stock_quantity }} disponibles</small>
+                            </div>
+
+                            <!-- Add to Cart Button -->
+                            <div class="d-grid gap-2 d-md-flex">
+                                <button type="submit" class="btn btn-primary btn-lg flex-grow-1">
+                                    <i class="fas fa-shopping-cart me-2"></i>Add To Cart
+                                </button>
+                                <button type="button" class="btn btn-outline-primary btn-lg">
+                                    <i class="fas fa-heart me-2"></i>Compare
+                                </button>
+                            </div>
+                        </form>
+                    {% else %}
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <a href="{{ url_for('login') }}" class="alert-link">Inicia sesión</a> para añadir productos al carrito.
+                        </div>
+                    {% endif %}
+
+                    <!-- Product Details -->
+                    <div class="product-details mt-5">
+                        <table class="table table-borderless">
+                            <tbody>
+                                <tr>
+                                    <td class="fw-bold">SKU:</td>
+                                    <td>WY{{ product.id }}</td>
+                                </tr>
+                                {% if product.materials %}
+                                    <tr>
+                                        <td class="fw-bold">Material:</td>
+                                        <td>{{ product.materials }}</td>
+                                    </tr>
+                                {% endif %}
+                                {% if product.dimensions %}
+                                    <tr>
+                                        <td class="fw-bold">Dimensiones:</td>
+                                        <td>{{ product.dimensions }}</td>
+                                    </tr>
+                                {% endif %}
+                                {% if product.weight %}
+                                    <tr>
+                                        <td class="fw-bold">Peso:</td>
+                                        <td>{{ product.weight }}</td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+
+                        <!-- Social Share -->
+                        <div class="social-share mt-4">
+                            <span class="fw-bold me-3">Compartir:</span>
+                            <a href="#" class="text-muted me-3"><i class="fab fa-facebook"></i></a>
+                            <a href="#" class="text-muted me-3"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="text-muted me-3"><i class="fab fa-instagram"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Product Tabs -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <ul class="nav nav-tabs" id="productTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="description-tab" data-bs-toggle="tab" data-bs-target="#description" type="button">
+                    Description
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="additional-tab" data-bs-toggle="tab" data-bs-target="#additional" type="button">
+                    Additional Information
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button">
+                    Reviews (5)
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="productTabsContent">
+            <div class="tab-pane fade show active" id="description" role="tabpanel">
+                <div class="p-4">
+                    <p>{{ product.description }}</p>
+                    <p>Esta hermosa pieza artesanal ha sido creada siguiendo las técnicas tradicionales wayuu que se han transmitido de generación en generación. Cada producto es único y refleja la rica cultura de La Guajira.</p>
+
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <img src="{{ product.image_url }}" alt="Detalle del producto" class="img-fluid rounded">
+                        </div>
+                        <div class="col-md-6">
+                            <img src="https://pixabay.com/get/g2d92e418cbf7b43bb4e5f3626800ac1dbd63324e771cd212fffd97ab7139ce8ba2cfd30800c99cf68b91824da22e75151e78dd8346527f502dc8ae100277f29e_1280.jpg" 
+                                 alt="Proceso de creación" class="img-fluid rounded">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="additional" role="tabpanel">
+                <div class="p-4">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td class="fw-bold">Artesana:</td>
+                                <td>{{ product.artisan_name or 'Comunidad Wayuu' }}</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">Origen:</td>
+                                <td>La Guajira, Colombia</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">Técnica:</td>
+                                <td>Tejido tradicional wayuu</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">Tiempo de elaboración:</td>
+                                <td>2-4 semanas</td>
+                            </tr>
+                            {% if product.materials %}
+                                <tr>
+                                    <td class="fw-bold">Materiales:</td>
+                                    <td>{{ product.materials }}</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="reviews" role="tabpanel">
+                <div class="p-4">
+                    <div class="review-item border-bottom pb-3 mb-3">
+                        <div class="d-flex justify-content-between">
+                            <div class="review-author">
+                                <strong>María González</strong>
+                                <div class="stars">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                </div>
+                            </div>
+                            <small class="text-muted">hace 2 días</small>
+                        </div>
+                        <p class="mt-2">Producto excelente, la calidad es increíble y se nota el trabajo artesanal. Muy recomendado.</p>
+                    </div>
+
+                    <div class="review-item">
+                        <div class="d-flex justify-content-between">
+                            <div class="review-author">
+                                <strong>Carlos Rodríguez</strong>
+                                <div class="stars">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                </div>
+                            </div>
+                            <small class="text-muted">hace 1 semana</small>
+                        </div>
+                        <p class="mt-2">Hermoso trabajo artesanal. Llegó en perfectas condiciones y el envío fue rápido.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Related Products -->
+{% if related_products %}
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Related Products</h2>
+
+        <div class="row g-4">
+            {% for related_product in related_products %}
+                <div class="col-lg-3 col-md-6">
+                    <div class="product-card h-100">
+                        <div class="product-image">
+                            <img src="{{ related_product.image_url }}" alt="{{ related_product.name }}" class="card-img-top">
+                            <div class="product-overlay">
+                                <a href="{{ url_for('product_detail', id=related_product.id) }}" class="btn btn-primary">Ver Detalles</a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">{{ related_product.name }}</h5>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="h6 text-primary mb-0">{{ format_currency(related_product.price) }}</span>
+                                <small class="text-muted">{{ related_product.artisan_name }}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="{{ url_for('shop') }}" class="btn btn-outline-primary">Show More</a>
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function changeMainImage(src) {
+    document.getElementById('mainImage').src = src;
+
+    // Update active thumbnail
+    document.querySelectorAll('.thumbnail-img').forEach(img => {
+        img.classList.remove('active');
+    });
+    event.target.classList.add('active');
+}
+
+function changeQuantity(delta) {
+    const quantityInput = document.getElementById('quantity');
+    const currentValue = parseInt(quantityInput.value);
+    const newValue = currentValue + delta;
+    const max = parseInt(quantityInput.getAttribute('max'));
+
+    if (newValue >= 1 && newValue <= max) {
+        quantityInput.value = newValue;
+    }
+}
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.thumbnail-img {
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+}
+
+.thumbnail-img:hover,
+.thumbnail-img.active {
+    opacity: 1;
+}
+
+.quantity-selector input {
+    border-left: none;
+    border-right: none;
+}
+
+.stars i {
+    font-size: 0.9rem;
+}
+
+.color-options .form-check-input:checked + .form-check-label {
+    font-weight: bold;
+    color: #C58B44;
+}
+
+.product-details table td {
+    padding: 0.5rem 0;
+}
+
+.review-item {
+    margin-bottom: 1rem;
+}
+
+.social-share a {
+    font-size: 1.2rem;
+}
+
+.social-share a:hover {
+    color: #C58B44 !important;
+}
+</style>
+{% endblock %}
