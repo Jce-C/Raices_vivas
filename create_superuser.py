@@ -12,7 +12,7 @@ User = get_user_model()
 # Crear superusuario solo si no existe
 if not User.objects.filter(username='admin').exists():
     User.objects.create_superuser(
-        username='admin',
+        username='Jose',
         email='admin@raicesvivas.com',
         password='admin123'
     )
