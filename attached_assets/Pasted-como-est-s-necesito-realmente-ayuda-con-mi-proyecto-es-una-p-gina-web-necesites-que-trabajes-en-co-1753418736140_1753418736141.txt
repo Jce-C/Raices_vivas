@@ -1,0 +1,149 @@
+como estás, necesito realmente ayuda con mi proyecto, es una página web necesites que trabajes en conjunto conmigo y me expliques el paso a pso detaallado, me preguntes lo que necesitaas para hacerlo lo más correcto y apegado a lo que quiero y te digo, para que pueda funcionar y yo pueda entender igualmente, ahora, no tengo mucho, solo la idea, quiero ver si en el camino podemos terminar con esto.
+
+La página web será implementada con herramientas especificas de la siguiente manera:
+
+construido con HTML, CSS y JavaScript puro. Consume APIs expuestas por un backend desarrollado con Django REST Framework. puede ser implementada con un servidor de desarrollo local o con otra opcion viable. los requerimientos, contextos etc, todo lo que necesites me lo podrás preguntar en el caamino, aquí está la información que tengo hasta el momento:
+
+Proyecto Diplomado: Empresa Raíces vivas.
+
+1. Nombre del Grupo
+
+·        Raíces Vivas.
+
+
+
+2. Tipo de Reto
+
+[x ] Comunitario
+
+[ ] Empresarial
+
+3. Integrantes del
+
+Grupo 
+
+·        Jose Carlos Barreto
+
+
+
+4. Introducción
+
+(Contexto General)
+
+El departamento de La Guajira, al norte de Colombia, es una
+
+región rica en diversidad étnica y cultural, donde conviven comunidades como
+
+los wayuu, wiwa, kogui y arhuacos. Sin embargo, a pesar de su valor
+
+patrimonial, muchas de sus tradiciones, lenguas ancestrales, expresiones
+
+artísticas y oficios artesanales permanecen invisibilizados frente al resto del
+
+país y del mundo. Esta situación se ve agravada por el limitado acceso a
+
+tecnologías digitales y por la escasa proyección mediática de los saberes locales.
+
+Ante este panorama, surge el reto de crear un espacio interactivo y accesible
+
+que conecte la riqueza cultural de La Guajira con audiencias globales,
+
+fortaleciendo tanto el tejido comunitario como las oportunidades de promoción
+
+turística y comercial para los artesanos locales.
+
+ 
+
+5. Definición del
+
+Problema o Necesidad.
+
+En La Guajira, muchas manifestaciones culturales, como las
+
+lenguas ancestrales, los saberes artesanales, la música tradicional y las
+
+costumbres autóctonas, enfrentan un proceso de invisibilización debido a la
+
+falta de espacios de difusión accesibles y actualizados. Esta necesidad se
+
+detectó a través de la observación directa, entrevistas comunitarias y el bajo
+
+nivel de presencia digital de los artesanos y actores culturales locales. El
+
+problema afecta principalmente a las comunidades indígenas y a los pequeños
+
+productores de bienes culturales, quienes carecen de canales efectivos para dar
+
+a conocer su trabajo y preservar su legado. También impacta al público nacional
+
+e internacional, que pierde la oportunidad de conectar con una de las regiones
+
+más diversas de Colombia. Actualmente, esto genera una pérdida progresiva de
+
+identidad cultural, una escasa valorización de las tradiciones locales y limita
+
+las oportunidades económicas para quienes viven del turismo y la artesanía.
+
+
+
+
+
+
+
+6.
+
+Público Beneficiado.
+
+La solución impacta directamente a la comunidad local de
+
+La Guajira, especialmente a los artesanos, músicos tradicionales,
+
+portadores de saberes ancestrales y a las comunidades indígenas como los wayuu.
+
+También se benefician los pequeños emprendedores culturales que buscan canales
+
+para visibilizar y comercializar sus productos. Adicionalmente, el público
+
+nacional e internacional interesado en el turismo cultural, las lenguas nativas
+
+y el patrimonio colombiano podrá acceder a un espacio confiable y enriquecedor
+
+que promueve el respeto y la valoración de la diversidad. La plataforma actúa
+
+como un puente entre las voces locales y el mundo, generando oportunidades de
+
+desarrollo social, económico y educativo.
+
+ 
+
+7. Solución Propuesta
+
+La solución diseñada por el grupo es un sitio web
+
+interactivo titulado “Raíces Vivas”, enfocado en la divulgación,
+
+preservación y proyección global de la riqueza cultural de La Guajira. Esta
+
+plataforma digital reúne contenidos sobre las costumbres, lenguas ancestrales,
+
+música, gastronomía, artesanías y destinos turísticos emblemáticos del
+
+departamento.
+
+El sitio incluirá un catálogo virtual de artesanos locales
+
+con opción de contacto directo, facilitando la compra y distribución de
+
+productos culturales. Además, integrará recursos audiovisuales y traducciones
+
+multilingües para ampliar el alcance del contenido a nivel nacional e
+
+internacional.
+
+Esta solución responde a la necesidad identificada de
+
+visibilizar y fortalecer el patrimonio cultural de las comunidades guajiras,
+
+conectándolas con audiencias más amplias y creando puentes entre tradición,
+
+tecnología y desarrollo económico.
