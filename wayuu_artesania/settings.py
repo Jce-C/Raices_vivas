@@ -171,6 +171,7 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost:5000',
     'http://127.0.0.1:5000',
     'http://0.0.0.0:5000',
+    'https://raices-vivas.up.railway.app',
 ]
 
 # Custom user model
