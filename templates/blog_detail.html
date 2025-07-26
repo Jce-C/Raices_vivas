@@ -1,0 +1,214 @@
+
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}{{ post.title }} - Raíces Vivas{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col">
+                <h1 class="display-4 fw-bold text-white">{{ post.title }}</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-white-50">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'blog' %}" class="text-white-50">Blog</a></li>
+                        <li class="breadcrumb-item active text-white">{{ post.title|truncatechars:30 }}</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Blog Post Content -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Main Content -->
+            <div class="col-lg-8">
+                <article class="blog-post">
+                    {% if post.featured_image %}
+                        <div class="post-image mb-4">
+                            <img src="{{ post.featured_image }}" alt="{{ post.title }}" class="img-fluid rounded shadow">
+                        </div>
+                    {% endif %}
+
+                    <div class="post-meta mb-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="text-muted">
+                                    <i class="fas fa-user me-1"></i>{{ post.author }}
+                                </span>
+                                <span class="text-muted mx-2">•</span>
+                                <span class="text-muted">
+                                    <i class="fas fa-calendar me-1"></i>{{ post.created_at|date:"d M Y" }}
+                                </span>
+                            </div>
+                            <div class="social-share">
+                                <span class="text-muted me-2">Compartir:</span>
+                                <a href="#" class="text-primary me-2" onclick="shareOnFacebook()">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                                <a href="#" class="text-info me-2" onclick="shareOnTwitter()">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                                <a href="#" class="text-success" onclick="shareOnWhatsApp()">
+                                    <i class="fab fa-whatsapp"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="post-content">
+                        {{ post.content|safe }}
+                    </div>
+
+                    <div class="post-tags mt-4">
+                        <span class="badge bg-primary me-2">Cultura Wayuu</span>
+                        <span class="badge bg-secondary me-2">Artesanías</span>
+                        <span class="badge bg-success">La Guajira</span>
+                    </div>
+                </article>
+
+                <!-- Navigation to other posts -->
+                <div class="post-navigation mt-5 pt-4 border-top">
+                    <div class="row">
+                        <div class="col-6">
+                            <a href="{% url 'blog' %}" class="btn btn-outline-primary">
+                                <i class="fas fa-arrow-left me-2"></i>Volver al Blog
+                            </a>
+                        </div>
+                        <div class="col-6 text-end">
+                            <a href="{% url 'shop' %}" class="btn btn-primary">
+                                Ver Productos <i class="fas fa-arrow-right ms-2"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Recent Posts -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-clock me-2"></i>Posts Recientes
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% for recent_post in recent_posts %}
+                            <div class="d-flex mb-3">
+                                {% if recent_post.featured_image %}
+                                    <img src="{{ recent_post.featured_image }}" 
+                                         alt="{{ recent_post.title }}" 
+                                         class="rounded me-3" 
+                                         style="width: 60px; height: 60px; object-fit: cover;">
+                                {% else %}
+                                    <div class="bg-light rounded me-3 d-flex align-items-center justify-content-center" 
+                                         style="width: 60px; height: 60px;">
+                                        <i class="fas fa-image text-muted"></i>
+                                    </div>
+                                {% endif %}
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">
+                                        <a href="{% url 'blog_detail' recent_post.slug %}" class="text-decoration-none text-dark">
+                                            {{ recent_post.title|truncatechars:40 }}
+                                        </a>
+                                    </h6>
+                                    <small class="text-muted">
+                                        {{ recent_post.created_at|date:"d M Y" }}
+                                    </small>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <p class="text-muted mb-0">No hay posts recientes</p>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Featured Products -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-star me-2"></i>Productos Destacados
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% for product in featured_products %}
+                            <div class="d-flex mb-3">
+                                <img src="{{ product.image_url }}" 
+                                     alt="{{ product.name }}" 
+                                     class="rounded me-3" 
+                                     style="width: 60px; height: 60px; object-fit: cover;">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">
+                                        <a href="{% url 'product_detail' product.id %}" class="text-decoration-none text-dark">
+                                            {{ product.name|truncatechars:30 }}
+                                        </a>
+                                    </h6>
+                                    <small class="text-primary fw-bold">
+                                        ${{ product.price|floatformat:0 }} COP
+                                    </small>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <p class="text-muted mb-0">No hay productos destacados</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.page-header {
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+                url('https://cdn.pixabay.com/photo/2018/05/30/00/24/thunderstorm-3441687_1280.jpg');
+    background-size: cover;
+    background-position: center;
+    padding: 120px 0 60px;
+}
+
+.post-content {
+    font-size: 1.1rem;
+    line-height: 1.8;
+}
+
+.post-content p {
+    margin-bottom: 1.5rem;
+}
+
+.social-share a:hover {
+    transform: translateY(-2px);
+    transition: all 0.3s ease;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function shareOnFacebook() {
+    const url = encodeURIComponent(window.location.href);
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+}
+
+function shareOnTwitter() {
+    const url = encodeURIComponent(window.location.href);
+    const text = encodeURIComponent(`{{ post.title }} - Raíces Vivas`);
+    window.open(`https://twitter.com/intent/tweet?url=${url}&text=${text}`, '_blank');
+}
+
+function shareOnWhatsApp() {
+    const text = encodeURIComponent(`{{ post.title }} - ${window.location.href}`);
+    window.open(`https://wa.me/?text=${text}`, '_blank');
+}
+</script>
+{% endblock %}

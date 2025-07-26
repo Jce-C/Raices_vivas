@@ -1,0 +1,13 @@
+[project]
+name = "wayuu-artesania-django"
+version = "0.1.0"
+description = "Django e-commerce platform for Wayuu artisans"
+requires-python = ">=3.11"
+dependencies = [
+    "Django>=4.2.7",
+    "djangorestframework>=3.14.0",
+    "django-cors-headers>=4.3.1",
+    "python-decouple>=3.8",
+    "django-filter>=23.3",
+    "gunicorn>=23.0.0",
+]
