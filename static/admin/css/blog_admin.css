@@ -1,0 +1,66 @@
+
+/* Estilos personalizados para el admin del blog */
+.field-content textarea {
+    min-height: 300px;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+
+.field-excerpt textarea {
+    min-height: 100px;
+}
+
+.field-featured_image input {
+    width: 100%;
+}
+
+.field-post_preview img {
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.blog-post-preview {
+    max-width: 200px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
+.blog-post-preview h4 {
+    margin: 0 0 5px 0;
+    font-size: 14px;
+    color: #333;
+}
+
+.blog-post-preview p {
+    margin: 0;
+    font-size: 12px;
+    color: #666;
+    line-height: 1.4;
+}
+
+/* Mejorar el editor de contenido */
+.field-content {
+    position: relative;
+}
+
+.content-editor-toolbar {
+    background: #f1f1f1;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+}
+
+.content-editor-toolbar button {
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 4px 8px;
+    margin-right: 4px;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.content-editor-toolbar button:hover {
+    background: #e6e6e6;
+}

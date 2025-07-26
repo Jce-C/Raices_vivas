@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+
+{% block title %}Confirmación de Pedido - Raíces Vivas{% endblock %}
+
+{% block content %}
+<section class="py-5" style="margin-top: 76px;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <!-- Success Message -->
+                <div class="text-center mb-5">
+                    <i class="fas fa-check-circle fa-5x text-success mb-4"></i>
+                    <h1 class="display-5 fw-bold mb-3">¡Pedido Confirmado!</h1>
+                    <p class="lead text-muted">
+                        Tu pedido ha sido recibido y está siendo procesado.
+                    </p>
+                </div>
+                
+                <!-- Order Details -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Detalles del Pedido</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <h6 class="fw-bold">Número de Pedido:</h6>
+                                <p class="text-primary fw-bold">{{ order.order_number }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="fw-bold">Fecha:</h6>
+                                <p>{{ order.created_at.strftime('%d de %B, %Y') }}</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Order Items -->
+                        <h6 class="fw-bold mb-3">Productos Ordenados:</h6>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Producto</th>
+                                        <th>Cantidad</th>
+                                        <th>Precio</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in order.order_items %}
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <img src="{{ item.product.image_url }}" 
+                                                         alt="{{ item.product.name }}" 
+                                                         class="me-3 rounded" 
+                                                         style="width: 50px; height: 50px; object-fit: cover;">
+                                                    <div>
+                                                        <h6 class="mb-0">{{ item.product.name }}</h6>
+                                                        {% if item.selected_color %}
+                                                            <small class="text-muted">Color: {{ item.selected_color }}</small>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>{{ item.quantity }}</td>
+                                            <td>{{ format_currency(item.price) }}</td>
+                                            <td class="fw-bold">{{ format_currency(item.price * item.quantity) }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                                <tfoot>
+                                    <tr class="table-active">
+                                        <th colspan="3">Total:</th>
+                                        <th class="text-primary">{{ format_currency(order.total_amount) }}</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        
+                        <!-- Billing Information -->
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <h6 class="fw-bold mb-3">Información de Facturación:</h6>
+                                <p class="mb-1">{{ order.billing_first_name }} {{ order.billing_last_name }}</p>
+                                <p class="mb-1">{{ order.billing_email }}</p>
+                                <p class="mb-1">{{ order.billing_phone }}</p>
+                                <p class="mb-1">{{ order.billing_address }}</p>
+                                <p class="mb-0">{{ order.billing_city }}, {{ order.billing_country }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="fw-bold mb-3">Método de Pago:</h6>
+                                <p class="mb-0">
+                                    {% if order.payment_method == 'bank_transfer' %}
+                                        <i class="fas fa-university me-2"></i>Transferencia Bancaria
+                                    {% elif order.payment_method == 'cash_on_delivery' %}
+                                        <i class="fas fa-truck me-2"></i>Pago Contra Entrega
+                                    {% endif %}
+                                </p>
+                                
+                                <h6 class="fw-bold mb-3 mt-4">Estado del Pedido:</h6>
+                                <span class="badge bg-warning">{{ order.status.title() }}</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Next Steps -->
+                        <div class="alert alert-info mt-4">
+                            <h6 class="alert-heading">
+                                <i class="fas fa-info-circle me-2"></i>Próximos Pasos:
+                            </h6>
+                            <ul class="mb-0">
+                                <li>Recibirás un email de confirmación en los próximos minutos.</li>
+                                <li>Nuestro equipo procesará tu pedido en 1-2 días hábiles.</li>
+                                <li>Te notificaremos cuando tu pedido sea enviado.</li>
+                                {% if order.payment_method == 'bank_transfer' %}
+                                    <li>Por favor, realiza la transferencia bancaria usando el número de pedido como referencia.</li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                        
+                        <!-- Actions -->
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{{ url_for('shop') }}" class="btn btn-outline-primary">
+                                <i class="fas fa-shopping-cart me-2"></i>Continuar Comprando
+                            </a>
+                            <a href="{{ url_for('profile') }}" class="btn btn-primary">
+                                <i class="fas fa-user me-2"></i>Ver Mis Pedidos
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.card {
+    border: none;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.card-header {
+    background: linear-gradient(45deg, #C58B44, #D49C55);
+    color: white;
+    border: none;
+}
+
+.table th {
+    border-top: none;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    letter-spacing: 0.5px;
+}
+
+.alert-info {
+    background-color: rgba(197, 139, 68, 0.1);
+    border-color: #C58B44;
+    color: #8B4513;
+}
+
+.alert-info .alert-heading {
+    color: #C58B44;
+}
+</style>
+{% endblock %}
+{% extends "base.html" %}
+
+{% block title %}Confirmación de Orden - Raíces Vivas{% endblock %}
+
+{% block content %}
+<div class="container my-5 pt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-success text-white text-center">
+                    <h4><i class="fas fa-check-circle me-2"></i>¡Orden Confirmada!</h4>
+                </div>
+                <div class="card-body text-center">
+                    <h5>Gracias por tu compra</h5>
+                    <p class="text-muted">Tu orden #{{ order.id }} ha sido procesada exitosamente.</p>
+                    
+                    <div class="order-details mt-4">
+                        <h6>Detalles de la Orden:</h6>
+                        <p><strong>Número de Orden:</strong> {{ order.id }}</p>
+                        <p><strong>Total:</strong> ${{ order.total_amount|floatformat:0 }}</p>
+                        <p><strong>Estado:</strong> {{ order.get_status_display }}</p>
+                        <p><strong>Fecha:</strong> {{ order.created_at|date:"d/m/Y H:i" }}</p>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <a href="{% url 'home' %}" class="btn btn-primary me-2">Volver al Inicio</a>
+                        <a href="{% url 'profile' %}" class="btn btn-outline-secondary">Ver Mis Órdenes</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

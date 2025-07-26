@@ -1,0 +1,609 @@
+{% extends "base.html" %}
+{% load static %}
+{% load currency_filters %}
+{% load currency_filters %}
+
+{% block title %}{{ product.name }} - Raíces Vivas{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<section class="py-3 bg-light" style="margin-top: 76px;">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'shop' %}">Tienda</a></li>
+                <li class="breadcrumb-item">{{ product.category.name }}</li>
+                <li class="breadcrumb-item active">{{ product.name }}</li>
+            </ol>
+        </nav>
+    </div>
+</section>
+
+<!-- Product Details -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Product Images -->
+            <div class="col-md-6">
+            <div class="product-images">
+                <div class="main-image mb-3">
+                    <img src="{{ product.image_url }}" alt="{{ product.name }}" class="img-fluid rounded shadow-sm product-main-image" style="width: 100%; height: 400px; object-fit: cover; cursor: pointer;" onclick="openImageModal('{{ product.image_url }}', '{{ product.name }}')">
+                </div>
+                {% if product.additional_images %}
+                    <div class="additional-images">
+                        <div class="row">
+                            {% for img_url in product.additional_images %}
+                                <div class="col-3 mb-2">
+                                    <img src="{{ img_url }}" alt="{{ product.name }}" class="img-fluid rounded shadow-sm" style="width: 100%; height: 80px; object-fit: cover; cursor: pointer;" onclick="changeMainImage('{{ img_url }}')">
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="product-details">
+                <nav aria-label="breadcrumb" class="mb-3">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'shop' %}">Tienda</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'shop' %}?category={{ product.category.id }}">{{ product.category.name }}</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+                    </ol>
+                </nav>
+
+                <h1 class="product-title mb-3" style="color: #C58B44;">{{ product.name }}</h1>
+                <p class="product-price h2 text-primary mb-4" style="color: #C58B44 !important; font-weight: bold;">${{ product.price|floatformat:0 }} COP</p>
+
+                <!-- Artisan Highlight Section -->
+                {% if product.artisan_name %}
+                    <div class="artisan-highlight bg-light p-4 mb-4 rounded-3 border-start border-5" style="border-color: #C58B44 !important;">
+                        <div class="row align-items-center">
+                            <div class="col-md-3 text-center">
+                                <div class="artisan-avatar mb-2">
+                                    <img src="{% if product.artisan_image %}{{ product.artisan_image }}{% else %}https://images.unsplash.com/photo-1566492031773-4f4e44671d66?w=100&h=100&fit=crop&crop=face{% endif %}" 
+                                         alt="{{ product.artisan_name }}" 
+                                         class="rounded-circle border border-3" 
+                                         style="width: 80px; height: 80px; object-fit: cover; border-color: #C58B44 !important;">
+                                </div>
+                            </div>
+                            <div class="col-md-9">
+                                <h5 class="mb-2" style="color: #C58B44;">
+                                    <i class="fas fa-user-circle me-2"></i>Creado por {{ product.artisan_name }}
+                                </h5>
+                                <p class="mb-2 text-muted small">
+                                    <i class="fas fa-map-marker-alt me-1"></i>
+                                    Artesana tradicional Wayuu de La Guajira, Colombia
+                                </p>
+                                <p class="mb-0 small">
+                                    <i class="fas fa-heart me-1 text-danger"></i>
+                                    Cada pieza está tejida a mano con técnicas ancestrales transmitidas de generación en generación.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="product-info mb-4">
+                    <p class="product-description lead mb-4">{{ product.description }}</p>
+
+                    <div class="product-specs">
+                        {% if product.artisan_name %}
+                            <div class="spec-item mb-2">
+                                <i class="fas fa-user text-muted me-2"></i>
+                                <strong>Artesano:</strong> {{ product.artisan_name }}
+                            </div>
+                        {% endif %}
+
+                        {% if product.materials %}
+                            <div class="spec-item mb-2">
+                                <i class="fas fa-leaf text-muted me-2"></i>
+                                <strong>Materiales:</strong> {{ product.materials }}
+                            </div>
+                        {% endif %}
+
+                        {% if product.dimensions %}
+                            <div class="spec-item mb-2">
+                                <i class="fas fa-ruler text-muted me-2"></i>
+                                <strong>Dimensiones:</strong> {{ product.dimensions }}
+                            </div>
+                        {% endif %}
+
+                        {% if product.weight %}
+                            <div class="spec-item mb-2">
+                                <i class="fas fa-weight text-muted me-2"></i>
+                                <strong>Peso:</strong> {{ product.weight }}
+                            </div>
+                        {% endif %}
+
+                        {% if product.colors %}
+                            <div class="spec-item mb-3">
+                                <i class="fas fa-palette text-muted me-2"></i>
+                                <strong>Colores disponibles:</strong>
+                                <div class="mt-2">
+                                    {% for color in product.colors %}
+                                        <span class="badge bg-secondary me-1">{{ color }}</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <div class="spec-item mb-3">
+                            <i class="fas fa-box text-muted me-2"></i>
+                            <strong>Stock disponible:</strong> 
+                            {% if product.stock_quantity > 0 %}
+                                <span class="text-success">{{ product.stock_quantity }} unidades</span>
+                            {% else %}
+                                <span class="text-danger">Agotado</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+            {% if product.stock_quantity > 0 %}
+                <div class="add-to-cart">
+                    <div class="quantity-selector mb-3">
+                        <label for="quantity" class="form-label">Cantidad:</label>
+                        <div class="input-group" style="width: 150px;">
+                            <button class="btn btn-outline-secondary" type="button" onclick="decreaseQuantity()">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <input type="number" class="form-control text-center" id="quantity" value="1" min="1" max="{{ product.stock_quantity }}">
+                            <button class="btn btn-outline-secondary" type="button" onclick="increaseQuantity()">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary btn-lg w-100 mb-3" onclick="addToCart({{ product.id }})" style="background-color: #C58B44; border-color: #C58B44;">
+                        <i class="fas fa-shopping-cart me-2"></i>Agregar al Carrito
+                    </button>
+
+                    <button class="btn btn-outline-secondary w-100 mb-3" onclick="addToWishlist({{ product.id }})">
+                        <i class="fas fa-heart me-2"></i>Agregar a Favoritos
+                    </button>
+                </div>
+            {% else %}
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Este producto está temporalmente agotado
+                </div>
+            {% endif %}
+
+            <div class="social-share mt-4">
+                <h6>Compartir:</h6>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-primary btn-sm" onclick="shareOnFacebook()">
+                        <i class="fab fa-facebook-f"></i>
+                    </button>
+                    <button class="btn btn-outline-info btn-sm" onclick="shareOnTwitter()">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="btn btn-outline-success btn-sm" onclick="shareOnWhatsApp()">
+                        <i class="fab fa-whatsapp"></i>
+                    </button>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+<!-- Image Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalLabel">{{ product.name }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="modalImage" src="" alt="" class="img-fluid rounded">
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+
+<!-- Product Tabs -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <ul class="nav nav-tabs" id="productTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="description-tab" data-bs-toggle="tab" data-bs-target="#description" type="button">
+                    Descripción
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="additional-tab" data-bs-toggle="tab" data-bs-target="#additional" type="button">
+                    Información Adicional
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button">
+                    Reseñas (5)
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="productTabsContent">
+            <div class="tab-pane fade show active" id="description" role="tabpanel">
+                <div class="p-4">
+                    <p>{{ product.description }}</p>
+                    <p>Esta hermosa pieza artesanal ha sido creada siguiendo las técnicas tradicionales wayuu que se han transmitido de generación en generación. Cada producto es único y refleja la rica cultura de La Guajira.</p>
+
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <img src="{{ product.image_url }}" alt="Detalle del producto" class="img-fluid rounded">
+                        </div>
+                        <div class="col-md-6">
+                            <img src="https://pixabay.com/get/g2d92e418cbf7b43bb4e5f3626800ac1dbd63324e771cd212fffd97ab7139ce8ba2cfd30800c99cf68b91824da22e75151e78dd8346527f502dc8ae100277f29e_1280.jpg" 
+                                 alt="Proceso de creación" class="img-fluid rounded">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="additional" role="tabpanel">
+                <div class="p-4">
+                    <!-- Artisan Story Section -->
+                    {% if product.artisan_name %}
+                        <div class="artisan-story mb-5">
+                            <h4 class="mb-3" style="color: #C58B44;">
+                                <i class="fas fa-user-friends me-2"></i>Conoce a tu Artesana
+                            </h4>
+                            <div class="row">
+                                <div class="col-md-4 text-center">
+                                    <img src="{% if product.artisan_image %}{{ product.artisan_image }}{% else %}https://images.unsplash.com/photo-1566492031773-4f4e44671d66?w=300&h=300&fit=crop&crop=face{% endif %}" 
+                                         alt="{{ product.artisan_name }}" 
+                                         class="img-fluid rounded-3 shadow-sm mb-3"
+                                         style="max-width: 200px;">
+                                </div>
+                                <div class="col-md-8">
+                                    <h5 class="mb-3">{{ product.artisan_name }}</h5>
+                                    <p class="mb-3">
+                                        {{ product.artisan_name }} es una maestra tejedora wayuu que ha dedicado su vida 
+                                        a preservar las técnicas ancestrales de su pueblo. Con más de 20 años de experiencia, 
+                                        cada una de sus creaciones refleja la rica tradición cultural de La Guajira.
+                                    </p>
+                                    <div class="row text-center">
+                                        <div class="col-4">
+                                            <div class="bg-light p-3 rounded">
+                                                <h6 class="mb-1">20+</h6>
+                                                <small class="text-muted">Años de experiencia</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="bg-light p-3 rounded">
+                                                <h6 class="mb-1">100+</h6>
+                                                <small class="text-muted">Piezas creadas</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="bg-light p-3 rounded">
+                                                <h6 class="mb-1">5⭐</h6>
+                                                <small class="text-muted">Calificación</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="my-4">
+                    {% endif %}
+
+                    <!-- Product Specifications -->
+                    <h5 class="mb-3">Especificaciones del Producto</h5>
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td class="fw-bold">Artesana:</td>
+                                <td>{{ product.artisan_name|default:'Comunidad Wayuu' }}</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">Origen:</td>
+                                <td>La Guajira, Colombia</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">Técnica:</td>
+                                <td>Tejido tradicional wayuu</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">Tiempo de elaboración:</td>
+                                <td>2-4 semanas</td>
+                            </tr>
+                            {% if product.materials %}
+                                <tr>
+                                    <td class="fw-bold">Materiales:</td>
+                                    <td>{{ product.materials }}</td>
+                                </tr>
+                            {% endif %}
+                            {% if product.dimensions %}
+                                <tr>
+                                    <td class="fw-bold">Dimensiones:</td>
+                                    <td>{{ product.dimensions }}</td>
+                                </tr>
+                            {% endif %}
+                            {% if product.weight %}
+                                <tr>
+                                    <td class="fw-bold">Peso:</td>
+                                    <td>{{ product.weight }}</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="reviews" role="tabpanel">
+                <div class="p-4">
+                    <div class="review-item border-bottom pb-3 mb-3">
+                        <div class="d-flex justify-content-between">
+                            <div class="review-author">
+                                <strong>María González</strong>
+                                <div class="stars">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                </div>
+                            </div>
+                            <small class="text-muted">hace 2 días</small>
+                        </div>
+                        <p class="mt-2">Producto excelente, la calidad es increíble y se nota el trabajo artesanal. Muy recomendado.</p>
+                    </div>
+
+                    <div class="review-item">
+                        <div class="d-flex justify-content-between">
+                            <div class="review-author">
+                                <strong>Carlos Rodríguez</strong>
+                                <div class="stars">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                </div>
+                            </div>
+                            <small class="text-muted">hace 1 semana</small>
+                        </div>
+                        <p class="mt-2">Hermoso trabajo artesanal. Llegó en perfectas condiciones y el envío fue rápido.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Productos Relacionados -->
+{% if related_products %}
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Productos Relacionados</h2>
+
+        <div class="row g-4">
+            {% for related_product in related_products %}
+                <div class="col-lg-3 col-md-6">
+                    <div class="product-card h-100">
+                        <div class="product-image">
+                            <img src="{{ related_product.image_url }}" alt="{{ related_product.name }}" class="card-img-top">
+                            <div class="product-overlay">
+                                <a href="{% url 'product_detail' related_product.id %}" class="btn btn-primary">Ver Detalles</a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">{{ related_product.name }}</h5>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="h6 text-primary mb-0">${{ related_product.price|floatformat:0 }} COP</span>
+                                <small class="text-muted">{{ related_product.artisan_name }}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="{% url 'shop' %}" class="btn btn-outline-primary">Ver Más</a>
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function changeMainImage(src) {
+    document.getElementById('mainImage').src = src;
+
+    // Update active thumbnail
+    document.querySelectorAll('.thumbnail-img').forEach(img => {
+        img.classList.remove('active');
+    });
+    event.target.classList.add('active');
+}
+
+function changeQuantity(delta) {
+    const quantityInput = document.getElementById('quantity');
+    const currentValue = parseInt(quantityInput.value);
+    const newValue = currentValue + delta;
+    const max = parseInt(quantityInput.getAttribute('max'));
+
+    if (newValue >= 1 && newValue <= max) {
+        quantityInput.value = newValue;
+    }
+}
+</script>
+{% if product.stock_quantity > 0 %}
+<script>
+function increaseQuantity() {
+    const quantityInput = document.getElementById('quantity');
+    const currentValue = parseInt(quantityInput.value);
+    const maxValue = parseInt(quantityInput.max);
+
+    if (currentValue < maxValue) {
+        quantityInput.value = currentValue + 1;
+    }
+}
+
+function decreaseQuantity() {
+    const quantityInput = document.getElementById('quantity');
+    const currentValue = parseInt(quantityInput.value);
+
+    if (currentValue > 1) {
+        quantityInput.value = currentValue - 1;
+    }
+}
+
+function addToCart(productId) {
+    const quantity = document.getElementById('quantity').value;
+
+    // Simulated cart addition - in a real app, this would be an AJAX call
+    showNotification(`¡Agregado al carrito! ${quantity} unidad(es) de {{ product.name }}`, 'success');
+}
+
+function addToWishlist(productId) {
+    showNotification('¡Agregado a favoritos!', 'info');
+}
+
+function openImageModal(imageSrc, altText) {
+    document.getElementById('modalImage').src = imageSrc;
+    document.getElementById('modalImage').alt = altText;
+    new bootstrap.Modal(document.getElementById('imageModal')).show();
+}
+
+function changeMainImage(newSrc) {
+    document.querySelector('.product-main-image').src = newSrc;
+}
+
+function shareOnFacebook() {
+    const url = encodeURIComponent(window.location.href);
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+}
+
+function shareOnTwitter() {
+    const url = encodeURIComponent(window.location.href);
+    const text = encodeURIComponent(`¡Mira este hermoso producto Wayuu: {{ product.name }}!`);
+    window.open(`https://twitter.com/intent/tweet?url=${url}&text=${text}`, '_blank');
+}
+
+function shareOnWhatsApp() {
+    const url = encodeURIComponent(window.location.href);
+    const text = encodeURIComponent(`¡Mira este hermoso producto Wayuu: {{ product.name }}! ${window.location.href}`);
+    window.open(`https://wa.me/?text=${text}`, '_blank');
+}
+
+function showNotification(message, type) {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+    notification.style.cssText = 'top: 20px; right: 20px; z-index: 1050; min-width: 300px;';
+    notification.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+
+    document.body.appendChild(notification);
+
+    // Auto remove after 3 seconds
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+        }
+    }, 3000);
+}
+</script>
+{% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.thumbnail-img {
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+}
+
+.thumbnail-img:hover,
+.thumbnail-img.active {
+    opacity: 1;
+}
+
+.quantity-selector input {
+    border-left: none;
+    border-right: none;
+}
+
+.stars i {
+    font-size: 0.9rem;
+}
+
+.color-options .form-check-input:checked + .form-check-label {
+    font-weight: bold;
+    color: #C58B44;
+}
+
+.product-details table td {
+    padding: 0.5rem 0;
+}
+
+.review-item {
+    margin-bottom: 1rem;
+}
+
+.social-share a {
+    font-size: 1.2rem;
+}
+
+.social-share a:hover {
+    color: #C58B44 !important;
+}
+
+/* Artisan highlighting styles */
+.artisan-highlight {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.artisan-highlight:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(197, 139, 68, 0.15);
+}
+
+.artisan-avatar img {
+    transition: transform 0.3s ease;
+}
+
+.artisan-avatar img:hover {
+    transform: scale(1.05);
+}
+
+.artisan-story {
+    background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+    border-radius: 15px;
+    padding: 2rem;
+    border: 1px solid #e9ecef;
+}
+
+.artisan-story .bg-light {
+    background: linear-gradient(135deg, #C58B44 0%, #D4A574 100%) !important;
+    color: white;
+    transition: transform 0.3s ease;
+}
+
+.artisan-story .bg-light:hover {
+    transform: translateY(-3px);
+}
+
+.artisan-story .bg-light h6,
+.artisan-story .bg-light small {
+    color: white !important;
+}
+</style>
+{% endblock %}
