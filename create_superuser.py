@@ -14,7 +14,7 @@ if not User.objects.filter(username='admin').exists():
     User.objects.create_superuser(
         username='admin',
         email='admin@raicesvivas.com',
-        password='raicesvivas2024'
+        password='admin123'
     )
     print("Superusuario creado exitosamente")
 else:
