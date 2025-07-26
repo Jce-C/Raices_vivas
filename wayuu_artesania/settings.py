@@ -175,3 +175,4 @@ CSRF_TRUSTED_ORIGINS = [
 
 # Custom user model
 AUTH_USER_MODEL = 'api.User'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
