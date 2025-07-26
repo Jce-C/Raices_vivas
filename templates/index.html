@@ -8,9 +8,12 @@
     #mainNav { display: none !important; }
 
 .hero-section {
-    background: url('{% static "images/v_fondo.gif" %}') !important;
-    background-size: cover !important;
-    background-position: center !important;
+    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+             url('{% static "images/v_fondo.gif" %}');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    padding-top: 0;
     height: 100vh;
 }
 
